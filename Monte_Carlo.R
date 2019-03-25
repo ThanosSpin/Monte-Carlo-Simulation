@@ -10,26 +10,28 @@ library(knitr)##Create .md, .html, and .pdf files
 library(markdown)##Create .md, .html, and .pdf files
 
 
-####Parallel procesing for running performance####
-####Set number of cores for parallel processing
+#### Parallel procesing for running performance ####
+
+# Set number of cores for parallel processing
 no_cores <- detectCores() - 2 
 
-####Register number of cores for parallel processing
+# Register number of cores for parallel processing
 registerDoParallel(no_cores)
 
-####Validate number of cores for parallel processing
+# Validate number of cores for parallel processing 
 getDoParWorkers()
 
-####Monte Carlo in 2d####
+#### Monte Carlo in 2d - Estimation the area of circle ####
 
-###Mc in 2d function###
-mc.2d <-function(x, y, d, n)
+# MC function in 2 dimensions ([0, d] = interval of the Uniform Distribution, n = number of samples) function
+mc.2k <-function(x, y, d, n)
   {  
-  accept <- 0
+  accept <- 0 # set counter to zero
 
-  data <- c(x, y)
+  data <- c(x, y) # starting vector
 
-  accepts <- matrix(data, 1, 2)
+  accepts <- matrix(data, 1, 2) # set matrix for the sampling data
+  
     for (i in 2:n) {
       y <- 2*runif(1, 0, d) - 1
       x <- 2*runif(1, 0 ,d) - 1
@@ -39,39 +41,42 @@ mc.2d <-function(x, y, d, n)
     accept <- accept + 1
   }
 }
-alpha <- accept/n
-par(mfrow=c(1, 2))
+alpha <- accept/n # probability to be inside the circle
 
-# hist(accepts[ , 1], freq=FALSE, las = 1, main="", xlab="x", ylab="Probability density", ylim = c(0, 1))
-plot(density(accepts[ , 1]), main = "")
+par(mfrow=c(1, 2)) # set 2 graphs per window
+
+plot(density(accepts[ , 1]), main = "") # probability density
+
 index <- seq(-1, 1, 0.1)
-lines(index, 0.5*index/index, col = "green")
+lines(index, 0.5*index/index, col = "green") # add green line to the mean of Uniform distribution, interval: [-1, 1]
 
-# x2 <- seq(min(c(0, accepts[ , 1])), max(accepts[ , 1]), length.out=100)
-# x2 <- x
-# curve(dnorm(x, mean(accepts[ , 1]), sd(accepts[ , 1])), col = 2,lty = 2, add = TRUE)
-plot(accepts, xlab="x accepts", ylab="y accepts")
+plot(accepts, xlab = "x accepts", ylab = "y accepts") # accepted points (points insode the circle)
 
-return(list(alpha, accepts))
+return(list(alpha, accepts)) # returns the probability to be inside the circle and the accepted points
 }
 
-####Checking the system time####
-dev.off()
-set.seed(15)
-system.time(mc.2d(0, 0, 1, 1000))
-set.seed(16)
-system.time(mc.2d(0, 0, 1, 10000))
-set.seed(19)
-system.time(mc.2d(0, 0, 1, 50000))
-set.seed(20)
-system.time(mc.2d(0, 0, 1, 100000))
-set.seed(21)
-system.time(mc.2d(0, 0, 1, 150000))
+#### Checking the system time ####
+dev.off() # close the active windows
+
+set.seed(15) # seed for regeneration
+system.time(mc.2d(0, 0, 1, 1000)) # starting point: (x,y) = (0, 0), [0, 1]: Uniform Distribution interval, n = 1000 samples
+
+set.seed(16)# seed for regeneration
+system.time(mc.2d(0, 0, 1, 10000)) # starting point: (x,y) = (0, 0), [0, 1]: Uniform Distribution interval, n = 10000 samples
+
+set.seed(19)# seed for regeneration
+system.time(mc.2d(0, 0, 1, 50000)) # starting point: (x,y) = (0, 0), [0, 1]: Uniform Distribution interval, n = 50000 samples
+
+set.seed(20)# seed for regeneration
+system.time(mc.2d(0, 0, 1, 100000)) # starting point: (x,y) = (0, 0), [0, 1]: Uniform Distribution interval, n = 100000 samples
+
+set.seed(21)# seed for regeneration
+system.time(mc.2d(0, 0, 1, 150000)) # starting point: (x,y) = (0, 0), [0, 1]: Uniform Distribution interval, n = 150000 samples
 
 
 
-####calculate the mean of the generated samples (MC acceptance ratio) to verify where the chain converges####
-mc_meanx_2d <- function(n, d, m) {
+#### calculate the mean of the generated samples (MC acceptance ratio - probability) to verify where the chain converges ####
+mc_meanx_2d <- function(n, d, m) { # n = samples, [0 , d] : Uniform distribution interval, m - iterations
   
   y <- 2*runif(1, 0, d) - 1
   z <- 2*runif(1, 0, d) - 1
@@ -81,86 +86,89 @@ mc_meanx_2d <- function(n, d, m) {
     x[i] <- mc.2d(y, z, d, n)[[1]] #Insert the data frame to a vector
     acc <-  mc.2d(y, z, d, n)[[2]][ , 1]*mc.2d(y, z, d, n)[[2]][ , 2] # joint Uniform distribution f(x)*f(y)
     }
-  z <- mean(x) #finding the mean of the acceptance rate 
+  z <- mean(x) #finding the mean of the acceptance rate - probability to be inside the circle 
   return(list(x, acc)) # return the acceptance rates of the process
 }
 
 
-set.seed(14)
-start.time <- Sys.time()
+set.seed(14) 
+start.time <- Sys.time() # starting time
 system.time(z <- mc_meanx_2d(10000, 1, 100))
-end.time <- Sys.time()
-(time.taken <- end.time - start.time)
+end.time <- Sys.time() # ending time
+(time.taken <- end.time - start.time) # running time
 
-###The mean value of the 100 independent samples from the distribution is the expected value
-###of the distribution
-###(f(x1) + ... + f(x100))/100 =.. E[f(x)]
+# The mean value of the 100 independent samples from the Uniform distribution is the expected value
+# of the distribution
+# (f(x1) + ... + f(x100))/100 =.. E[f(x)] (Law of Large Numbers)
 
-####We calculate the expected value of the 100 independent samples from the uniform distribution####
-####in 2 dimensions
+# We calculate the expected value of the 100 independent samples from the uniform distribution
+# in 2 dimensions
 
 dev.off() # close graphs per window
-mean(z[[2]]) ###The expected value of the distribution
+mean(z[[2]]) # The expected value of the Uniform distribution, true mean of U ~[ -1, 1] : μ = (-1 + 1)/2 = 0
 
 
 index <- seq(-1, 1, 0.1)
 
-plot(density(z[[2]]), main ="") #plot probability density of z - vector f(x,y)
+plot(density(z[[2]]), main ="") # plot probability density of z - vector f(x,y)
 abline(v = mean(z[[2]]), col = "red", lwd = 1, lty = 3) # add the line of mean value
 text(mean(z[[2]]), 0.1 , round(mean(z[[2]]), 3)) # add the mean value as text
-#lines(index, 0.5*index/index, col = "green") # straight line at the mean value of the Unifrom distribution
+# lines(index, 0.5*index/index, col = "green") # straight line at the mean value of the Unifrom distribution
 
 
-plot(density(z[[1]]), main ="") #plot probability density of z - vector (MC acceptance ratio)
+plot(density(z[[1]]), main ="") # plot probability density of z - vector (MC acceptance ratio)
 abline(v = mean(z[[1]]), col = "red", lwd = 1, lty = 3) # add the line of mean value
 text(mean(z[[1]]), 0.1 , round(mean(z[[1]]), 3)) # add the mean value as text
 
 
-
-mean(z[[1]])###The expected value of the MC acceptance ratio
+mean(z[[1]])# The expected value of the MC acceptance ratio - probability for a point to be inside the circle
 dev.off()
 
 
-hist(z[[1]], probability = TRUE, ylim = c(0, 120))###histogram of probabilities z (f(x1),..., f(x100))
-lines(density(z[[1]]),col="red")####
+hist(z[[1]], probability = TRUE, ylim = c(0, 120))# histogram of probabilities z (f(x1),..., f(x100))
+lines(density(z[[1]]),col="red") # add line of probability density
 
 sd(z[[2]]) # standard deviation of joint distribution of accepted values
 
-####We know that the estimation of the integrate is |B| = prob_estimated*(2^d) where d = 2 are the dimensions.
-####So the |B| estimation is mean(z)*(2^2)
+# We know that the estimation of the integrate is |B| = prob_estimated*(2^k) where k = 2 are the dimensions.
+# So the |B| estimation is mean(z)*(2^2)
 
-####Estimate the integrate of B (2 dimensions)####
+#### Estimate the integrate of B (2 dimensions) ####
 (B_estimated <- mean(z[[1]])*(2^2))
 
 
-##We know from the calculation of the integrate with polar coordinates (2 dimensions) 
-##that that the area of probability density function upon 2d sphere (B_true) is pi/4*(4)
+# We know from the calculation of the integrate with polar coordinates (2 dimensions) 
+# that that the area of probability density function upon 2d sphere (B_true) is pi/2*(2)
 (B_true <- pi)
 
-##We estimated with Monte Carlo sampling of uniform distribution 
-##that integrate of B is mean_estimated*(2^2) = mean(z)*4 = 3.141796 close to the true volume of 2d sphere (pi*R^2, pi for R = 1)
-##Correspondingly, the area of probability density function upon 2d sphere (B_estimated) is mean(z)*2^2 
+# We estimated with Monte Carlo sampling from Uniform Distribution 
+# that the integrate of B is mean_estimated*(2^2) = mean(z)*4 = 3.141796 close to the true volume of 2d sphere (pi*R^2, 
+# pi for R = 1)
+# Correspondingly, the estimated area of 2 dimension's sphere (B_estimated): is mean(z)*2^2 
 B_estimated == 2^2*mean(z[[1]])
 
-####The error of the integrate estimation is B_estimated/B_true####
+# The error of the integrate estimation is B_estimated/B_true 
 (estimated_error <- abs(B_true - B_estimated))
-round(estimated_error, 4)
+round(estimated_error, 4) # round value in four decimals
 
-###The error of estimation of area B  is 0.0006  or 0.02%
+# The error of estimation of area B  is 0.0006  or 0.02%
 (estimated_error_perc <- round(abs(1 - (B_estimated/B_true)), 4)*100)
 
-###It is a precise algorithm (estimation error very low < 1%)
+# It is a precise algorithm (estimation error very low < 1%)
 
-####Monte Carlo in k - dimensions####
+#### Monte Carlo in k - dimensions (Volume estimation of hyper-sphere) ####
 
-###MC in k - dimensions###
-mc.d <-function(n, d, k)
+# MC function in k - dimensions 
+mc.d <-function(n, d, k) # k = dimensions, U ~ [0, d], n = samples 
 {  
   accept <- 0
   
   x <- (2*runif(k, 0, d) - d)
+  
   data <- c(x)
+  
   accepts <- matrix(data, 1, k)
+  
   for (i in 1:n) {
     x <- t(matrix(2*runif(k, 0, d) - d)) 
     if(sum(x^2) <= 1) { 
@@ -168,6 +176,7 @@ mc.d <-function(n, d, k)
       accept <- accept + 1
     }
   }
+  
   alpha <- accept/n
   x1 <- accepts
   
