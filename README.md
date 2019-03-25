@@ -1,7 +1,7 @@
 
 # Monte Carlo Simulation for Volume Estimation
 
-The purpose of this repository is the use of MC simulations for volume estimation. We focus on the shape of sphere.
+The purpose of this repository is the use of MC Simulations for volume estimation. We focus on the shape of Sphere.
 
 To begin with, we use MC in order to calculate the integral of a circle in two dimensions with radius R = 1. 
 Then, we repeat the process for more dimensions. 
