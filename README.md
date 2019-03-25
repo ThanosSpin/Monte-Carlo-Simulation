@@ -1,5 +1,5 @@
 
-# Monte Carlo Simulation for Volume Estimation
+# Monte Carlo (MC) Simulation for Volume Estimation
 
 The purpose of this repository is the use of MC Simulations for volume estimation. We focus on the shape of Sphere.
 
