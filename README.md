@@ -1,5 +1,6 @@
 # Volume-Estimation-with-Monte-Carlo
-Monte Carlo simulation for volume estimation (hyper-sphere)
+
+# Monte Carlo simulation for volume estimation (hyper-sphere)
 
 The purpose of this repository is the use of MC simulations for volume estimation.
 
