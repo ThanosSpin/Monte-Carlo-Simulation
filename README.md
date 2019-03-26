@@ -1,12 +1,15 @@
 
 # Monte Carlo (MC) Simulations for Volume Estimation
 
-The purpose of this repository is the use of MC Simulations for volume estimation. We focus on the shape of Sphere.
+The goal of this repository is the use of MC Simulations for volume estimation. 
+I focus on the shape of Sphere.
 
-To begin with, we use MC in order to calculate the integral of a circle in two dimensions with radius R = 1. 
-Then, we repeat the process for more dimensions. 
+To begin with, I use MC in order to estimate the integral of a circle in two dimensions with radius R = 1. 
+Then, I repeat the process for more dimensions (k = 1,.., k = 200). 
 
-First, we calculate the integral in closed-form (on paper) and then, we simulate values from Uniform distribution, 
-U ~ [0,1], based on the circle model x1^2 + x2^2 + ... + xk^2 <= 1, k - dimensions, for R = 1. 
+First, I calculate the integral in closed-form (true volume) and then, I simulate values from Uniform distribution, 
+U ~ [-1,1], based on the circle model x1^2 + x2^2 + ... + xk^2 <= 1, k - dimensions, for R = 1. 
 
-In addition, we implement a corresponding process for MCMC (MCMC repository).
+In addition, I implement a corresponding process for MCMC (Markov Chain Monte Carlo Simulation). 
+
+MCMC process will be uploaded in a separate repository.
