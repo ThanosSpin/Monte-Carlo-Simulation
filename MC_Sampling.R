@@ -343,6 +343,7 @@ slope$accepts # number of accepted points
 #### The expected Time T ####
 
 # The expected Time T Monte Carlo has to run (number of samples) in order to have X accepted points inside the circle
+X <- 1 
 
 c <- 1/X # calculated in slope data frame
 d <- 10 # dimensions
