@@ -56,7 +56,7 @@ return(list(alpha, accepts)) # returns the probability to be inside the circle a
 }
 
 #### Checking the system time ####
-dev.off() # close the active windows
+# dev.off() # close the active windows
 
 set.seed(15) # seed for regeneration
 system.time(mc.2d(0, 0, 1, 1000)) # starting point: (x,y) = (0, 0), [0, 1]: Uniform Distribution interval, n = 1000 samples
