@@ -83,8 +83,8 @@ mc_meanx_2d <- function(n, d, m) { # n = samples, [0 , d] : Uniform distribution
   x <- c()
   acc <- c()  
   for (i in 1:m) {
-    x[i] <- mc.2k(y, z, d, n)[[1]] #Insert the data frame to a vector
-    acc <-  mc.2k(y, z, d, n)[[2]][ , 1]*mc.2d(y, z, d, n)[[2]][ , 2] # joint Uniform distribution f(x)*f(y)
+    x[i] <- mc.2d(y, z, d, n)[[1]] #Insert the data frame to a vector
+    acc <-  mc.2d(y, z, d, n)[[2]][ , 1]*mc.2d(y, z, d, n)[[2]][ , 2] # joint Uniform distribution f(x)*f(y)
     }
   z <- mean(x) #finding the mean of the acceptance rate - probability to be inside the circle 
   return(list(x, acc)) # returns the acceptance rates of the process 
