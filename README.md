@@ -1,5 +1,5 @@
 
-# Monte Carlo (MC) Simulations for d-dimensional Sphere Volume Estimation
+# Monte Carlo (MC) Simulations for Volume Estimation of a d-dimensional Sphere
 
 The goal of this repository is the use of MC Simulations for volume estimation of a d-dimensional Sphere.
 
