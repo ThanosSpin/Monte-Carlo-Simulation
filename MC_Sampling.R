@@ -25,34 +25,34 @@ getDoParWorkers()
 
 # MC function in 2 dimensions ([0, d] = interval of the Uniform Distribution, n = number of samples) function
 mc.2d <-function(x, y, d, n)
-  {  
+{  
   accept <- 0 # set counter to zero
-
+  
   data <- c(x, y) # starting vector
-
+  
   accepts <- matrix(data, 1, 2) # set matrix for the sampling data
   
-    for (i in 2:n) {
-      y <- 2*runif(1, 0, d) - 1
-      x <- 2*runif(1, 0 ,d) - 1
-      
-      if((x^2 + y^2) <= 1) { 
-    accepts <- rbind(accepts, c(x,y))
-    accept <- accept + 1
+  for (i in 2:n) {
+    y <- 2*runif(1, 0, d) - 1
+    x <- 2*runif(1, 0 ,d) - 1
+    
+    if((x^2 + y^2) <= 1) { 
+      accepts <- rbind(accepts, c(x,y))
+      accept <- accept + 1
+    }
   }
-}
-alpha <- accept/n # probability to be inside the circle
-
-par(mfrow=c(1, 2)) # set 2 graphs per window
-
-plot(density(accepts[ , 1]), main = "") # probability density
-
-index <- seq(-1, 1, 0.1)
-lines(index, 0.5*index/index, col = "green") # add green line to the mean of Uniform distribution, interval: [-1, 1]
-
-plot(accepts, xlab = "x accepts", ylab = "y accepts") # accepted points (points insode the circle)
-
-return(list(alpha, accepts)) # returns the probability to be inside the circle and the accepted points
+  alpha <- accept/n # probability to be inside the circle
+  
+  par(mfrow=c(1, 2)) # set 2 graphs per window
+  
+  plot(density(accepts[ , 1]), main = "") # probability density
+  
+  index <- seq(-1, 1, 0.1)
+  lines(index, 0.5*index/index, col = "green") # add green line to the mean of Uniform distribution, interval: [-1, 1]
+  
+  plot(accepts, xlab = "x accepts", ylab = "y accepts") # accepted points (points insode the circle)
+  
+  return(list(alpha, accepts)) # returns the probability to be inside the circle and the accepted points
 }
 
 #### Checking the system time ####
@@ -85,7 +85,7 @@ mc_meanx_2d <- function(n, d, m) { # n = samples, [0 , d] : Uniform distribution
   for (i in 1:m) {
     x[i] <- mc.2d(y, z, d, n)[[1]] #Insert the data frame to a vector
     acc <-  mc.2d(y, z, d, n)[[2]][ , 1]*mc.2d(y, z, d, n)[[2]][ , 2] # joint Uniform distribution f(x)*f(y)
-    }
+  }
   z <- mean(x) #finding the mean of the acceptance rate - probability to be inside the circle 
   return(list(x, acc)) # returns the acceptance rates of the process 
 }
@@ -187,9 +187,9 @@ mc.d <-function(n, d, k) # k = dimensions, U ~ [0, d], n = samples
   text(mean(accepts[ , 1]), 0.1 , round(mean(accepts[ , 1]), 3)) # add the mean value as text
   
   plot(accepts, xlab = "x accepts", ylab = "y accepts") # plot accepted points (2 dimensions)
-    
+  
   return(list(alpha, accepts)) # the function returns probability and accepted points
-  }
+}
 
 
 set.seed(17) # seed for regeneration
@@ -277,20 +277,20 @@ mc.10d_run_time <-function(number_accepts, d, k)
   data <- c(2*runif(k, 0, d) - 1) # vector of simulated point
   accepts <- matrix(data, 1, k)  # matrix includes the first point of the process
   
-    n <- 0 # counter for number of steps
-      
-    while(accept < number_accepts + 1) { # while loop (accept < number of accepts)
-        n <- n + 1 # incremental counter for number of steps
-        x <- t(matrix(2*runif(k, 0, d) - 1)) # new simulated point
-       if(sum(x^2) <= 1) { # if x is inside the sphere
+  n <- 0 # counter for number of steps
+  
+  while(accept < number_accepts + 1) { # while loop (accept < number of accepts)
+    n <- n + 1 # incremental counter for number of steps
+    x <- t(matrix(2*runif(k, 0, d) - 1)) # new simulated point
+    if(sum(x^2) <= 1) { # if x is inside the sphere
       accepts <- rbind(accepts, x) # x is inserted into the matrix of accepts
       accept <- accept + 1 # and accept counter is increasing by 1
       
-      }
-      }
-    alpha <- accept/n # probability of accepting points
-  return(n) # return number of steps
+    }
   }
+  alpha <- accept/n # probability of accepting points
+  return(n) # return number of steps
+}
 
 
 set.seed(22) # seed for regeneration
@@ -301,7 +301,7 @@ start.time <- Sys.time() # starting time
 set.seed(31) # seed for regeneration
 
 for (i in seq(2000, 10000, by = 1000)) {
-number_steps <- cbind(number_steps, mc.10d_run_time(i, 1, 10)) # iterating process for i - accepted points
+  number_steps <- cbind(number_steps, mc.10d_run_time(i, 1, 10)) # iterating process for i - accepted points
 }
 end.time <- Sys.time() # ending time
 (time.taken <- end.time - start.time) # running time
@@ -343,7 +343,7 @@ slope$accepts # number of accepted points
 #### The expected Time T ####
 
 # The expected Time T Monte Carlo has to run (number of samples) in order to have X accepted points inside the circle
-X <- 1 
+X <- 1
 
 c <- 1/X # calculated in slope data frame
 d <- 10 # dimensions
@@ -373,8 +373,8 @@ asym_var <- function(l, n, d, k, m){
   for (i in 1:l) {
     x[, i] <- (mc_meanx_d(n, d, k, m))
   }
- y <- x
-   return(y)
+  y <- x
+  return(y)
 }
 
 
@@ -405,23 +405,19 @@ dev.off() # close open windows
 ### Normality function ####
 normality <- function (x, k) { 
   y <- (x - (B_true/2^k))/sd(x)
-return(y)
-  }
+  return(y)
+}
 
 ### asymptotic variance in each iteration ###
 apply(normality(y[ , ], 10), 2, var) 
 
 
 ### Histogram of y ####
-hist(normality(y[ , ], 10) ,freq = FALSE, main = "Normalization of Expected Mean 
-     Values (k - 10 dimensions)", xlab = "")
+hist(normality(y[ , ], 10) ,freq = FALSE, main = "", xlab = "", ylim = c(0, 0.5), xaxt = "n")
+axis(1, at = c(seq(-3, 3, by = 1)), labels = c(seq(-3, 3, by = 1)))
 
 ### Add curved line (density) ###
 lines(density(normality(y[ , ], 10)),col="red")
 
-### set seed for generating the same sample ###
-set.seed(321)
-
 ### add line with sampling from Normal disribution ###
-lines(density(rnorm(1000)), col = " green", lty = 3)
-
+curve(dnorm(x, mean=0, sd=1), add=TRUE, type = "l", col = "blue", lty = 3)
